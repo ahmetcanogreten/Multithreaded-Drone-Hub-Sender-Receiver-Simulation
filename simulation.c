@@ -1,6 +1,6 @@
 #include "simulation.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 sem_t active_hubs_mutex;
 int active_hubs;
@@ -35,8 +35,8 @@ void* drone_thread();
 
 int main(int argc, char *argv[]){
     int i = 0, j = 0;
-    int total_received, total_delivered, total_sent, total_assigned;
-    total_received = total_delivered = total_sent = total_assigned = 0;
+    int total_received, total_delivered, total_sent, total_assigned, total_helped, total_received_job;
+    total_received = total_delivered = total_sent = total_assigned = total_helped = total_received_job = 0;
     InitWriteOutput();
     initialize_world();
 
@@ -75,6 +75,8 @@ int main(int argc, char *argv[]){
     }
     for(i = 0; i < num_of_drones; i++){
         total_delivered += drones[i].total_delivered;
+        total_helped += drones[i].total_help;
+        total_received_job += drones[i].total_received_job;
     }
 
     destroy_world();
@@ -83,7 +85,9 @@ int main(int argc, char *argv[]){
         printf("TOTAL ASSIGNED : %d\n", total_assigned);
         printf("TOTAL SENT : %d\n", total_sent);
         printf("TOTAL RECEIVED : %d\n", total_received);
-        printf("TOTAL DELIVERED : %d\n", total_received);  
+        printf("TOTAL DELIVERED : %d\n", total_delivered);
+        printf("TOTAL HELPED : %d\n", total_helped); 
+        printf("TOTAL JOB RECEIVED : %d\n", total_received_job); 
     }
      
 
@@ -266,7 +270,7 @@ void* drone_thread(int *index){
             continue;
         }
         else {
-            ;
+            this->total_received_job++;
             //printf("DRONE RECEIVED JOB\n");
         }   
         tmp_order = this->order_dummy->next;
@@ -348,7 +352,7 @@ void* drone_thread(int *index){
 
                 sem_post(&this->order_ready);
                 //printf("DRONE HELP JOB DONE, CURRENT HUB : %d\n", this->current_hub_id);
-
+                this->total_help++;
                 break;
         }
 
@@ -676,6 +680,8 @@ void initialize_drones(){
         sem_init(&drones[i].order_ready, 0, 0);
 
         drones[i].total_delivered = 0;
+        drones[i].total_help = 0;
+        drones[i].total_received_job = 0;
     }
 }
 

@@ -60,7 +60,6 @@ void FillHubInfo(HubInfo *hubInfo, int id) {
 }
 
 void WriteOutput(SenderInfo* senderInfo, ReceiverInfo* receiverInfo, DroneInfo* droneInfo, HubInfo* hubInfo, Action action) {
-    return;
     unsigned long long time = GetTimestamp();
     unsigned int senderID =0, receiverID=0, droneID=0, hubID=0;
     pthread_mutex_lock(&mutexWrite);

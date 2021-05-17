@@ -33,6 +33,8 @@ typedef struct Drone {
     DroneOrderNode *order_dummy;
 
     int total_delivered;
+    int total_help;
+    int total_received_job;
     long long last_timestamp;
 
 } Drone;
